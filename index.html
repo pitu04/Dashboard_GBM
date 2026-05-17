@@ -20,6 +20,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .btn-retry{margin-top:8px;background:none;border:1px solid var(--border2);color:var(--muted);font-family:var(--mono);font-size:12px;padding:7px 18px;border-radius:6px;cursor:pointer;}
 .btn-retry:hover{color:var(--blue);border-color:var(--blue);}
 #app{display:none;}
+
+/* Header */
 .hdr{display:flex;align-items:center;justify-content:space-between;padding:26px 40px 20px;border-bottom:1px solid var(--border);}
 .eyebrow{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-family:var(--mono);margin-bottom:4px;}
 .hdr h1{font-size:22px;font-weight:600;letter-spacing:-.02em;}
@@ -30,45 +32,68 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .kpi-badge .l{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;}
 .btn-refresh{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:11px;font-family:var(--mono);padding:5px 13px;cursor:pointer;transition:color .2s,border-color .2s;}
 .btn-refresh:hover{color:var(--blue);border-color:var(--blue);}
+
+/* Layout */
 .main{padding:26px 40px;display:flex;flex-direction:column;gap:20px;}
-.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
-.section-header{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:4px 0 2px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+.g3-1{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
+
+/* Section header */
+.section-hdr{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding-bottom:8px;border-bottom:1px solid var(--border);}
+
+/* Metric */
 .metric{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
 .metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac,var(--blue));opacity:.75;}
 .m-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
 .m-val{font-size:28px;font-weight:600;font-family:var(--mono);letter-spacing:-.02em;}
 .m-unit{font-size:13px;font-weight:400;color:var(--muted);margin-left:2px;}
 .m-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* Extra metric — highlighted */
+.metric-extra{background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.3);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
+.metric-extra::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);}
+
+/* Card */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 22px;}
 .card-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:16px;}
+
+/* Extra card — highlighted border */
+.card-extra{background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.2);border-radius:12px;padding:20px 22px;}
+.card-extra .card-title{color:var(--orange);}
+
+/* Legend */
 .legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px;}
 .leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
 .leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+
+/* Bars */
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .bar-row:last-child{margin-bottom:0;}
-.bar-lbl{font-size:12px;color:var(--muted);width:92px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bar-track{flex:1;height:14px;background:var(--bg3);border-radius:3px;overflow:hidden;display:flex;}
-.bar-fill{height:100%;}
+.bar-lbl{font-size:12px;color:var(--muted);width:96px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:14px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;}
 .bar-val{font-size:12px;color:var(--muted);font-family:var(--mono);width:48px;flex-shrink:0;}
+
+/* Table */
 .tbl{width:100%;border-collapse:collapse;}
 .tbl td{padding:7px 6px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);}
 .tbl td:first-child{color:var(--muted);}
 .tbl td:last-child{text-align:right;font-family:var(--mono);font-size:12px;}
 .tbl tr:last-child td{border-bottom:none;}
+
+/* Badge */
 .badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;letter-spacing:.04em;text-transform:uppercase;}
 .b-blue{background:rgba(79,142,247,.15);color:var(--blue);}
-.b-green{background:rgba(52,201,142,.15);color:var(--green);}
-.b-amber{background:rgba(245,200,66,.15);color:var(--yellow);}
-.b-red{background:rgba(232,100,58,.15);color:var(--red);}
-.b-orange{background:rgba(245,166,35,.15);color:var(--orange);}
+.b-orange{background:rgba(245,166,35,.2);color:var(--orange);}
+
 .sec-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;}
 .chart-wrap{position:relative;width:100%;}
+
+/* Footer */
 .footer{padding:14px 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-family:var(--mono);}
-/* Extra hours highlight */
-.extra-alert{background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.25);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
-.extra-alert::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);opacity:.75;}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 .fu{animation:fadeUp .4s ease both;}
 </style>
@@ -103,17 +128,32 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 
   <main class="main">
 
-    <!-- BLOQUE 1: Resumen general -->
-    <div class="section-header">Resumen general</div>
-    <div class="g5">
-      <div class="metric fu" style="--ac:var(--blue)"><div class="m-lbl">Horas normales</div><div class="m-val" id="v-normal">—<span class="m-unit">h</span></div><div class="m-sub" id="s-normal">—</div></div>
-      <div class="extra-alert fu" style="animation-delay:.05s"><div class="m-lbl">Horas extras</div><div class="m-val" id="v-extra">—<span class="m-unit">h</span></div><div class="m-sub" id="s-extra">—</div></div>
-      <div class="metric fu" style="--ac:var(--red);animation-delay:.1s"><div class="m-lbl">Correctivo</div><div class="m-val" id="v-corr">—<span class="m-unit">h</span></div><div class="m-sub" id="s-corr">—</div></div>
-      <div class="metric fu" style="--ac:var(--blue);animation-delay:.15s"><div class="m-lbl">Preventivo</div><div class="m-val" id="v-prev">—<span class="m-unit">h</span></div><div class="m-sub" id="s-prev">—</div></div>
-      <div class="metric fu" style="--ac:var(--green);animation-delay:.2s"><div class="m-lbl">Mes más cargado</div><div class="m-val" id="v-mes">—<span class="m-unit">h</span></div><div class="m-sub" id="s-mes">—</div></div>
+    <!-- BLOQUE 1: Métricas generales -->
+    <div class="section-hdr">Resumen general</div>
+    <div class="g4">
+      <div class="metric fu" style="--ac:var(--blue)">
+        <div class="m-lbl">Horas normales</div>
+        <div class="m-val" id="v-normal">—<span class="m-unit">h</span></div>
+        <div class="m-sub" id="s-normal">—</div>
+      </div>
+      <div class="metric-extra fu" style="animation-delay:.05s">
+        <div class="m-lbl" style="color:var(--orange)">Horas extras</div>
+        <div class="m-val" id="v-extra" style="color:var(--orange)">—<span class="m-unit" style="color:var(--muted)">h</span></div>
+        <div class="m-sub" id="s-extra">—</div>
+      </div>
+      <div class="metric fu" style="--ac:var(--red);animation-delay:.1s">
+        <div class="m-lbl">Correctivo</div>
+        <div class="m-val" id="v-corr">—<span class="m-unit">h</span></div>
+        <div class="m-sub" id="s-corr">—</div>
+      </div>
+      <div class="metric fu" style="--ac:var(--blue);animation-delay:.15s">
+        <div class="m-lbl">Preventivo</div>
+        <div class="m-val" id="v-prev">—<span class="m-unit">h</span></div>
+        <div class="m-sub" id="s-prev">—</div>
+      </div>
     </div>
 
-    <!-- BLOQUE 2: Evolución mensual + semanal -->
+    <!-- BLOQUE 2: Evolución mensual -->
     <div class="g2">
       <div class="card fu">
         <div class="card-title">Horas por mes · Normal vs Extra</div>
@@ -124,7 +164,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
         <div class="chart-wrap" style="height:220px"><canvas id="cMesExtra"></canvas></div>
       </div>
       <div class="card fu">
-        <div class="card-title">Horas por mes · Correctivo vs Preventivo</div>
+        <div class="card-title">Correctivo vs Preventivo por mes</div>
         <div class="legend">
           <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div>Preventivo</div>
           <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div>Correctivo</div>
@@ -134,28 +174,30 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
       </div>
     </div>
 
-    <!-- BLOQUE 3: Horas extras por trabajo -->
-    <div class="section-header">Análisis horas extras</div>
+    <!-- BLOQUE 3: Horas extras — sección de justificación -->
+    <div class="section-hdr" style="color:var(--orange);border-color:rgba(245,166,35,0.3)">Análisis horas extras · justificación de carga</div>
     <div class="g3">
-      <div class="card fu">
-        <div class="card-title">Trabajos que generan más horas extra</div>
+      <div class="card-extra fu">
+        <div class="card-title">Trabajos que generan horas extra</div>
         <div id="barsExtra"></div>
       </div>
-      <div class="card fu">
-        <div class="card-title">Normal vs Extra · proporción global</div>
-        <div class="chart-wrap" style="height:185px"><canvas id="cDonutExtra"></canvas></div>
-        <div class="legend" style="justify-content:center;margin-top:12px">
-          <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div>Normal</div>
-          <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div>Extra</div>
-        </div>
+      <div class="card-extra fu">
+        <div class="card-title">Horas extra por mes</div>
+        <div class="chart-wrap" style="height:200px"><canvas id="cExtraMes"></canvas></div>
       </div>
-      <div class="card fu">
-        <div class="card-title">Carga semanal · horas totales</div>
-        <div class="chart-wrap" style="height:220px"><canvas id="cSem"></canvas></div>
+      <div class="card-extra fu">
+        <div class="card-title">Extra por tipo de mantenimiento</div>
+        <div class="chart-wrap" style="height:160px"><canvas id="cExtraTipo"></canvas></div>
+        <div class="legend" style="justify-content:center;margin-top:10px">
+          <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div>Correctivo</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div>Preventivo</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--grey)"></div>Otros</div>
+        </div>
       </div>
     </div>
 
-    <!-- BLOQUE 4: Detalle -->
+    <!-- BLOQUE 4: Top trabajos + edificios + semanas -->
+    <div class="section-hdr">Detalle operativo</div>
     <div class="g3">
       <div class="card fu">
         <div class="card-title">Top 10 tipos de trabajo · horas totales</div>
@@ -166,23 +208,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
         <table class="tbl" id="tEdif"></table>
       </div>
       <div class="card fu">
-        <div class="card-title">Días con más horas registradas</div>
-        <div id="barsDias"></div>
+        <div class="card-title">Carga semanal · horas totales</div>
+        <div class="chart-wrap" style="height:220px"><canvas id="cSem"></canvas></div>
       </div>
     </div>
 
-    <!-- BLOQUE 5: Estado reportes -->
+    <!-- BLOQUE 5: Días top + distribución -->
     <div class="g2">
       <div class="card fu">
-        <div class="card-title">Estado validación reportes</div>
-        <div class="g2" style="gap:16px">
-          <div><div class="sec-lbl">MPYME</div><table class="tbl" id="tMpyme"></table></div>
-          <div><div class="sec-lbl">GIM</div><table class="tbl" id="tGim"></table></div>
-        </div>
+        <div class="card-title">Días con más horas registradas</div>
+        <div id="barsDias"></div>
       </div>
       <div class="card fu">
         <div class="card-title">Distribución tipo mantenimiento</div>
-        <div class="chart-wrap" style="height:160px"><canvas id="cDonutTipo"></canvas></div>
+        <div class="chart-wrap" style="height:170px"><canvas id="cDonutTipo"></canvas></div>
         <div class="legend" style="justify-content:center;margin-top:10px">
           <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div>Correctivo</div>
           <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div>Preventivo</div>
@@ -204,10 +243,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 const API='https://script.google.com/macros/s/AKfycbw93UEgQLfqwec5jaYGxn26TD2enJEEkuNdwN-vFXGjxB4hxCCPt8j7dhDzTtif2XpN/exec';
 const MES=['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const gc='#ffffff10', tc='#7c879e';
-let cMesExtra, cMesTipo, cDonutExtra, cDonutTipo, cSem;
+let cMesExtra,cMesTipo,cExtraMes,cExtraTipo,cDonutTipo,cSem;
 
-const r1 = n => Math.round(n*10)/10;
-const pct = (a,b) => b ? Math.round(a/b*1000)/10+'%' : '0%';
+const r1=n=>Math.round(n*10)/10;
+const pct=(a,b)=>b?Math.round(a/b*1000)/10+'%':'0%';
 
 function parseDate(v){
   if(!v) return null;
@@ -228,8 +267,8 @@ function getWeek(d){
   return Math.ceil((((dt-y0)/86400000)+1)/7);
 }
 
-function bars(id, labels, data, color){
-  const el=document.getElementById(id); el.innerHTML='';
+function bars(id,labels,data,color){
+  const el=document.getElementById(id);el.innerHTML='';
   const max=Math.max(...data,0.01);
   labels.forEach((l,i)=>{
     el.innerHTML+=`<div class="bar-row">
@@ -240,35 +279,8 @@ function bars(id, labels, data, color){
   });
 }
 
-function barsDouble(id, labels, dataNorm, dataExtra){
-  const el=document.getElementById(id); el.innerHTML='';
-  const max=Math.max(...dataNorm.map((n,i)=>n+dataExtra[i]),0.01);
-  labels.forEach((l,i)=>{
-    const wN=(dataNorm[i]/max*100).toFixed(1);
-    const wE=(dataExtra[i]/max*100).toFixed(1);
-    const total=r1(dataNorm[i]+dataExtra[i]);
-    el.innerHTML+=`<div class="bar-row">
-      <div class="bar-lbl" title="${l}">${l}</div>
-      <div class="bar-track">
-        <div class="bar-fill" style="width:${wN}%;background:#4f8ef7;border-radius:3px 0 0 3px"></div>
-        <div class="bar-fill" style="width:${wE}%;background:#f5a623;border-radius:0 3px 3px 0"></div>
-      </div>
-      <div class="bar-val">${total}h</div>
-    </div>`;
-  });
-}
-
 function tbl(id,rows){
   document.getElementById(id).innerHTML=rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');
-}
-
-function badge(k){
-  if(!k) return '';
-  const kl=k.toLowerCase();
-  if(kl==='ok') return '<span class="badge b-green">Ok</span>';
-  if(kl==='pendiente') return '<span class="badge b-amber">Pendiente</span>';
-  if(kl==='mal') return '<span class="badge b-red">Mal</span>';
-  return '';
 }
 
 async function init(){
@@ -291,9 +303,7 @@ async function init(){
     const iTrab=col('TRABAJO');
     const iFech=col('FECHA');
     const iEx=col('EX?');
-    const iMpy=col('MPYME');
-    const iGim=col('GIM');
-    const iHH=col('HH decimal');  // nueva columna
+    const iHH=col('HH decimal');
 
     const rows=raw.slice(1)
       .filter(r=>r.some(c=>c!==''&&c!==null&&c!==undefined))
@@ -304,8 +314,6 @@ async function init(){
         horas:  parseFloat(r[iHH])||0,
         fecha:  parseDate(r[iFech]),
         extra:  String(r[iEx]||'').toUpperCase()==='SI',
-        mpyme:  String(r[iMpy]||'').trim(),
-        gim:    String(r[iGim]||'').trim(),
       }))
       .filter(r=>r.horas>0);
 
@@ -321,14 +329,14 @@ async function init(){
     const otros      = sum(r=>r.tipo==='Otros');
     const acomp      = sum(r=>r.tipo==='Acompañamiento');
 
-    // Fechas rango
+    // Rango fechas
     const fechas=rows.map(r=>r.fecha).filter(Boolean).sort((a,b)=>a-b);
-    const fMin=fechas[0], fMax=fechas[fechas.length-1];
+    const fMin=fechas[0],fMax=fechas[fechas.length-1];
     const subtitle=fMin&&fMax
       ?`Interface Barcelona · ${MES[fMin.getMonth()+1]} – ${MES[fMax.getMonth()+1]} ${fMax.getFullYear()} · ${rows.length} registros`
       :`Interface Barcelona · ${rows.length} registros`;
 
-    // Por mes — normal vs extra
+    // Por mes — Normal vs Extra
     const mmEx={};
     rows.forEach(r=>{
       if(!r.fecha) return;
@@ -337,7 +345,7 @@ async function init(){
       if(r.extra) mmEx[m].E+=r.horas; else mmEx[m].N+=r.horas;
     });
 
-    // Por mes — tipo mant
+    // Por mes — Tipo
     const mmTipo={};
     rows.forEach(r=>{
       if(!r.fecha) return;
@@ -349,20 +357,17 @@ async function init(){
     });
 
     const mk=Object.keys(mmEx).map(Number).sort((a,b)=>a-b);
-    const mTot=mk.map(m=>(mmEx[m]?.N||0)+(mmEx[m]?.E||0));
-    const topM=mk[mTot.indexOf(Math.max(...mTot))];
 
-    // Semanas
-    const sm={};
-    rows.forEach(r=>{if(r.fecha){const s=getWeek(r.fecha);sm[s]=(sm[s]||0)+r.horas;}});
-    const sk=Object.keys(sm).map(Number).sort((a,b)=>a-b);
-
-    // Trabajos con horas extras (top 10)
+    // Extras por trabajo top 10
     const trabExtra={};
     rows.filter(r=>r.extra).forEach(r=>{trabExtra[r.trabajo]=(trabExtra[r.trabajo]||0)+r.horas;});
     const topTrabExtra=Object.entries(trabExtra).sort((a,b)=>b[1]-a[1]).slice(0,10);
 
-    // Trabajos totales top 10 (normal + extra)
+    // Extras por tipo de mantenimiento
+    const tipoExtra={};
+    rows.filter(r=>r.extra).forEach(r=>{tipoExtra[r.tipo]=(tipoExtra[r.tipo]||0)+r.horas;});
+
+    // Trabajos totales top 10
     const trabTot={};
     rows.forEach(r=>{trabTot[r.trabajo]=(trabTot[r.trabajo]||0)+r.horas;});
     const topTrab=Object.entries(trabTot).sort((a,b)=>b[1]-a[1]).slice(0,10);
@@ -372,12 +377,10 @@ async function init(){
     rows.forEach(r=>{em[r.edif]=(em[r.edif]||0)+r.horas;});
     const topE=Object.entries(em).sort((a,b)=>b[1]-a[1]);
 
-    // MPYME / GIM
-    const mpM={},gM={};
-    rows.forEach(r=>{
-      const mv=r.mpyme||'Sin dato'; mpM[mv]=(mpM[mv]||0)+1;
-      const gv=r.gim||'Sin dato';   gM[gv]=(gM[gv]||0)+1;
-    });
+    // Semanas
+    const sm={};
+    rows.forEach(r=>{if(r.fecha){const s=getWeek(r.fecha);sm[s]=(sm[s]||0)+r.horas;}});
+    const sk=Object.keys(sm).map(Number).sort((a,b)=>a-b);
 
     // Días top 8
     const dm={};
@@ -391,30 +394,26 @@ async function init(){
     // ── RENDER ──
     document.getElementById('sub').textContent=subtitle;
     document.getElementById('v-total').textContent=total;
-
     document.getElementById('v-normal').innerHTML=normales+'<span class="m-unit">h</span>';
     document.getElementById('s-normal').textContent=pct(normales,total)+' del total';
-    document.getElementById('v-extra').innerHTML=extras+'<span class="m-unit">h</span>';
+    document.getElementById('v-extra').innerHTML=extras+'<span class="m-unit" style="color:var(--muted)">h</span>';
     document.getElementById('s-extra').textContent=pct(extras,total)+' del total';
-
     document.getElementById('v-corr').innerHTML=correctivo+'<span class="m-unit">h</span>';
     document.getElementById('s-corr').textContent=pct(correctivo,total)+' del total';
     document.getElementById('v-prev').innerHTML=preventivo+'<span class="m-unit">h</span>';
     document.getElementById('s-prev').textContent=pct(preventivo,total)+' del total';
-    document.getElementById('v-mes').innerHTML=r1(mTot[mk.indexOf(topM)])+'<span class="m-unit">h</span>';
-    document.getElementById('s-mes').textContent=MES[topM];
     document.getElementById('ft-fecha').textContent='Actualizado: '+new Date().toLocaleString('es-ES');
 
-    [cMesExtra,cMesTipo,cDonutExtra,cDonutTipo,cSem].forEach(c=>c&&c.destroy());
+    [cMesExtra,cMesTipo,cExtraMes,cExtraTipo,cDonutTipo,cSem].forEach(c=>c&&c.destroy());
 
-    // Gráfico Normal vs Extra por mes
+    // Normal vs Extra por mes
     cMesExtra=new Chart(document.getElementById('cMesExtra'),{type:'bar',data:{labels:mk.map(m=>MES[m]),datasets:[
-      {label:'Normal', data:mk.map(m=>r1(mmEx[m]?.N||0)), backgroundColor:'#4f8ef7', stack:'a'},
-      {label:'Extra',  data:mk.map(m=>r1(mmEx[m]?.E||0)), backgroundColor:'#f5a623', stack:'a'},
+      {label:'Normal',data:mk.map(m=>r1(mmEx[m]?.N||0)),backgroundColor:'#4f8ef7',stack:'a'},
+      {label:'Extra', data:mk.map(m=>r1(mmEx[m]?.E||0)),backgroundColor:'#f5a623',stack:'a'},
     ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
       scales:{x:{stacked:true,grid:{color:gc},ticks:{color:tc}},y:{stacked:true,grid:{color:gc},ticks:{color:tc}}}}});
 
-    // Gráfico Correctivo vs Preventivo por mes
+    // Correctivo vs Preventivo por mes
     cMesTipo=new Chart(document.getElementById('cMesTipo'),{type:'bar',data:{labels:mk.map(m=>MES[m]),datasets:[
       {label:'Preventivo',data:mk.map(m=>r1(mmTipo[m]?.P||0)),backgroundColor:'#4f8ef7',stack:'a'},
       {label:'Correctivo',data:mk.map(m=>r1(mmTipo[m]?.C||0)),backgroundColor:'#e8643a',stack:'a'},
@@ -422,13 +421,27 @@ async function init(){
     ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
       scales:{x:{stacked:true,grid:{color:gc},ticks:{color:tc}},y:{stacked:true,grid:{color:gc},ticks:{color:tc}}}}});
 
-    // Donut Normal vs Extra
-    cDonutExtra=new Chart(document.getElementById('cDonutExtra'),{type:'doughnut',data:{
-      labels:['Normal','Extra'],
-      datasets:[{data:[normales,extras],backgroundColor:['#4f8ef7','#f5a623'],borderWidth:0,hoverOffset:8}]
-    },options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}});
+    // Extras por mes — línea
+    cExtraMes=new Chart(document.getElementById('cExtraMes'),{type:'line',data:{labels:mk.map(m=>MES[m]),datasets:[{
+      data:mk.map(m=>r1(mmEx[m]?.E||0)),
+      borderColor:'#f5a623',backgroundColor:'rgba(245,166,35,0.1)',
+      tension:0.4,fill:true,pointRadius:5,
+      pointBackgroundColor:'#f5a623',pointBorderColor:'#0e1117',pointBorderWidth:2
+    }]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:gc},ticks:{color:tc}},y:{grid:{color:gc},ticks:{color:tc},beginAtZero:true}}}});
 
-    // Donut tipo mantenimiento
+    // Extras por tipo — donut
+    const tipoLabels=Object.keys(tipoExtra);
+    const tipoData=Object.values(tipoExtra).map(v=>r1(v));
+    const tipoColors={'Correctivo':'#e8643a','Preventivo':'#4f8ef7','Otros':'#555e72','Acompañamiento':'#34c98e'};
+    cExtraTipo=new Chart(document.getElementById('cExtraTipo'),{type:'doughnut',data:{
+      labels:tipoLabels,
+      datasets:[{data:tipoData,
+        backgroundColor:tipoLabels.map(t=>tipoColors[t]||'#7c879e'),
+        borderWidth:0,hoverOffset:8}]
+    },options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false}}}});
+
+    // Tipo mantenimiento total — donut
     cDonutTipo=new Chart(document.getElementById('cDonutTipo'),{type:'doughnut',data:{
       labels:['Correctivo','Preventivo','Otros','Acompañamiento'],
       datasets:[{data:[correctivo,preventivo,otros,acomp],
@@ -446,15 +459,13 @@ async function init(){
     if(topTrabExtra.length>0){
       bars('barsExtra',topTrabExtra.map(t=>t[0]),topTrabExtra.map(t=>t[1]),'#f5a623');
     } else {
-      document.getElementById('barsExtra').innerHTML='<p style="font-size:12px;color:var(--muted);text-align:center;padding:20px 0">No hay horas extras registradas aún</p>';
+      document.getElementById('barsExtra').innerHTML='<p style="font-size:12px;color:var(--muted);text-align:center;padding:24px 0">No hay horas extras registradas</p>';
     }
 
-    bars('barsDias',topD.map(t=>t[0]),topD.map(t=>t[1]),'#f5c842');
     bars('barsTrab',topTrab.map(t=>t[0]),topTrab.map(t=>t[1]),'#4f8ef7');
+    bars('barsDias',topD.map(t=>t[0]),topD.map(t=>t[1]),'#f5c842');
 
     tbl('tEdif',topE.map((e,i)=>[e[0],i===0?'<span class="badge b-blue">Principal</span>':'',r1(e[1])+'&nbsp;h']));
-    tbl('tMpyme',Object.entries(mpM).sort((a,b)=>b[1]-a[1]).map(e=>[e[0],badge(e[0]),e[1]]));
-    tbl('tGim',Object.entries(gM).sort((a,b)=>b[1]-a[1]).map(e=>[e[0],badge(e[0]),e[1]]));
 
     document.getElementById('loader').style.display='none';
     document.getElementById('app').style.display='block';
