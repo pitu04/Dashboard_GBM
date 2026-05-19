@@ -198,14 +198,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 
     <!-- BLOQUE 4: Top trabajos + edificios + semanas -->
     <div class="section-hdr">Detalle operativo</div>
-    <div class="g3">
+    <div class="g2">
       <div class="card fu">
-        <div class="card-title">Top 10 tipos de trabajo · horas totales</div>
-        <div id="barsTrab"></div>
-      </div>
-      <div class="card fu">
-        <div class="card-title">Edificios</div>
-        <table class="tbl" id="tEdif"></table>
+        <div class="card-title">Top trabajos · horas por edificio</div>
+        <div class="legend" style="margin-bottom:14px">
+          <div class="leg-item"><div class="leg-dot" style="background:#4f8ef7"></div>Interface</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#34c98e"></div>Otros edificios</div>
+        </div>
+        <div id="barsTrabEdif"></div>
       </div>
       <div class="card fu">
         <div class="card-title">Carga semanal · horas totales</div>
@@ -462,10 +462,33 @@ async function init(){
       document.getElementById('barsExtra').innerHTML='<p style="font-size:12px;color:var(--muted);text-align:center;padding:24px 0">No hay horas extras registradas</p>';
     }
 
-    bars('barsTrab',topTrab.map(t=>t[0]),topTrab.map(t=>t[1]),'#4f8ef7');
-    bars('barsDias',topD.map(t=>t[0]),topD.map(t=>t[1]),'#f5c842');
+    // Trabajos por edificio — Interface vs otros, top 10
+    const trabEdif={};
+    rows.forEach(r=>{
+      if(!trabEdif[r.trabajo]) trabEdif[r.trabajo]={iface:0,otros:0};
+      if(r.edif.toLowerCase().includes('interface')) trabEdif[r.trabajo].iface+=r.horas;
+      else trabEdif[r.trabajo].otros+=r.horas;
+    });
+    const topTrabEdif=Object.entries(trabEdif)
+      .map(([t,v])=>({t,iface:r1(v.iface),otros:r1(v.otros),total:r1(v.iface+v.otros)}))
+      .sort((a,b)=>b.total-a.total).slice(0,10);
 
-    tbl('tEdif',topE.map((e,i)=>[e[0],i===0?'<span class="badge b-blue">Principal</span>':'',r1(e[1])+'&nbsp;h']));
+    const elTE=document.getElementById('barsTrabEdif'); elTE.innerHTML='';
+    const maxTE=Math.max(...topTrabEdif.map(r=>r.total),0.01);
+    topTrabEdif.forEach(r=>{
+      const wI=(r.iface/maxTE*100).toFixed(1);
+      const wO=(r.otros/maxTE*100).toFixed(1);
+      elTE.innerHTML+=`<div class="bar-row">
+        <div class="bar-lbl" title="${r.t}">${r.t}</div>
+        <div class="bar-track" style="display:flex">
+          <div class="bar-fill" style="width:${wI}%;background:#4f8ef7;border-radius:3px 0 0 3px"></div>
+          <div class="bar-fill" style="width:${wO}%;background:#34c98e;border-radius:${wI==='0.0'?'3px':'0 3px 3px 0'}"></div>
+        </div>
+        <div class="bar-val">${r.total}h</div>
+      </div>`;
+    });
+
+    bars('barsDias',topD.map(t=>t[0]),topD.map(t=>t[1]),'#f5c842');
 
     document.getElementById('loader').style.display='none';
     document.getElementById('app').style.display='block';
