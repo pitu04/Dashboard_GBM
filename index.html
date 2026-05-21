@@ -610,89 +610,149 @@ async function init(){
       document.getElementById('s-prev').textContent = pct(fPrev,fTotal)+' del total';
     }
 
-    // ── IA ──
-    function buildDataContext() {
-      const byMes = {};
-      allRows.forEach(r => {
-        if(!r.fecha) return;
-        const m = MES[r.fecha.getMonth()+1];
-        if(!byMes[m]) byMes[m]={normal:0,extra:0,correctivo:0,preventivo:0};
-        if(r.extra) byMes[m].extra+=r.horas; else byMes[m].normal+=r.horas;
-        if(r.tipo==='Correctivo') byMes[m].correctivo+=r.horas;
-        if(r.tipo==='Preventivo') byMes[m].preventivo+=r.horas;
+    // ── ASISTENTE LOCAL (sin API) ──
+    function buildStats() {
+      const byMes={}, byTrab={}, byTrabExtra={}, byTipo={}, byEdif={};
+      allRows.forEach(r=>{
+        const h=r.horas;
+        // Por mes
+        if(r.fecha){
+          const m=MES[r.fecha.getMonth()+1];
+          if(!byMes[m]) byMes[m]={total:0,normal:0,extra:0,correctivo:0,preventivo:0};
+          byMes[m].total+=h;
+          if(r.extra) byMes[m].extra+=h; else byMes[m].normal+=h;
+          if(r.tipo==='Correctivo') byMes[m].correctivo+=h;
+          if(r.tipo==='Preventivo') byMes[m].preventivo+=h;
+        }
+        // Por trabajo
+        if(!byTrab[r.trabajo]) byTrab[r.trabajo]={total:0,extra:0};
+        byTrab[r.trabajo].total+=h;
+        if(r.extra) byTrab[r.trabajo].extra+=h;
+        // Por tipo
+        byTipo[r.tipo]=(byTipo[r.tipo]||0)+h;
+        // Por edificio
+        byEdif[r.edif]=(byEdif[r.edif]||0)+h;
       });
-      Object.keys(byMes).forEach(m=>{ Object.keys(byMes[m]).forEach(k=>{byMes[m][k]=r1(byMes[m][k]);}); });
-
-      const trabExtra2={};
-      allRows.filter(r=>r.extra).forEach(r=>{trabExtra2[r.trabajo]=(trabExtra2[r.trabajo]||0)+r.horas;});
-      const topExtras=Object.entries(trabExtra2).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([t,h])=>`${t}: ${r1(h)}h`);
-
-      const trabAll={};
-      allRows.forEach(r=>{trabAll[r.trabajo]=(trabAll[r.trabajo]||0)+r.horas;});
-      const topAll2=Object.entries(trabAll).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([t,h])=>`${t}: ${r1(h)}h`);
-
-      return `Eres un asistente que responde preguntas sobre los datos de horas hombre de mantenimiento del edificio Interface BCN de GBM Facility Services. Responde siempre en español, de forma concisa y directa. Aquí están los datos reales:
-
-TOTALES GENERALES:
-- Total horas: ${r1(allRows.reduce((s,r)=>s+r.horas,0))}h
-- Horas normales: ${r1(allRows.filter(r=>!r.extra).reduce((s,r)=>s+r.horas,0))}h
-- Horas extras: ${r1(allRows.filter(r=>r.extra).reduce((s,r)=>s+r.horas,0))}h
-- Correctivo: ${r1(allRows.filter(r=>r.tipo==='Correctivo').reduce((s,r)=>s+r.horas,0))}h
-- Preventivo: ${r1(allRows.filter(r=>r.tipo==='Preventivo').reduce((s,r)=>s+r.horas,0))}h
-- Total registros: ${allRows.length}
-
-HORAS POR MES:
-${Object.entries(byMes).map(([m,v])=>`- ${m}: ${r1(v.normal+v.extra)}h total (${v.normal}h normales, ${v.extra}h extras, ${v.correctivo}h correctivo, ${v.preventivo}h preventivo)`).join('\n')}
-
-TOP 5 TRABAJOS QUE GENERAN MÁS HORAS EXTRA:
-${topExtras.join(', ')}
-
-TOP 5 TRABAJOS POR HORAS TOTALES:
-${topAll2.join(', ')}
-
-Responde solo con los datos que tienes. Si preguntan algo que no está, dilo claramente.`;
+      // Redondear
+      Object.values(byMes).forEach(v=>Object.keys(v).forEach(k=>{v[k]=r1(v[k]);}));
+      Object.values(byTrab).forEach(v=>Object.keys(v).forEach(k=>{v[k]=r1(v[k]);}));
+      return {byMes,byTrab,byTipo,byEdif};
     }
 
-    const aiHistory=[];
+    function responderPregunta(pregunta) {
+      const p = pregunta.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+      const stats = buildStats();
+      const {byMes,byTrab,byTipo,byEdif} = stats;
+
+      const totalH    = r1(allRows.reduce((s,r)=>s+r.horas,0));
+      const totalE    = r1(allRows.filter(r=>r.extra).reduce((s,r)=>s+r.horas,0));
+      const totalN    = r1(allRows.filter(r=>!r.extra).reduce((s,r)=>s+r.horas,0));
+      const totalCorr = r1(allRows.filter(r=>r.tipo==='Correctivo').reduce((s,r)=>s+r.horas,0));
+      const totalPrev = r1(allRows.filter(r=>r.tipo==='Preventivo').reduce((s,r)=>s+r.horas,0));
+
+      // Detectar mes mencionado
+      const mesesNombres = {
+        'enero':'Ene','febrero':'Feb','marzo':'Mar','abril':'Abr',
+        'mayo':'May','junio':'Jun','julio':'Jul','agosto':'Ago',
+        'septiembre':'Sep','octubre':'Oct','noviembre':'Nov','diciembre':'Dic'
+      };
+      let mesMencionado = null;
+      Object.entries(mesesNombres).forEach(([nombre,code])=>{
+        if(p.includes(nombre)) mesMencionado = code;
+      });
+
+      // ── Preguntas sobre horas extras ──
+      if(p.includes('extra') || p.includes('extras')){
+        if(mesMencionado && byMes[mesMencionado]){
+          const v = byMes[mesMencionado];
+          return `En ${mesMencionado} tuviste ${v.extra}h extras de un total de ${v.total}h (${pct(v.extra,v.total)} del mes).`;
+        }
+        if(p.includes('trabajo') || p.includes('tarea') || p.includes('genera') || p.includes('mas') || p.includes('más')){
+          const top = Object.entries(byTrab).sort((a,b)=>b[1].extra-a[1].extra).slice(0,3);
+          return `Los trabajos que más horas extra generan son:\n1. ${top[0]?.[0]}: ${top[0]?.[1]?.extra}h\n2. ${top[1]?.[0]}: ${top[1]?.[1]?.extra}h\n3. ${top[2]?.[0]}: ${top[2]?.[1]?.extra}h`;
+        }
+        if(p.includes('porcentaje') || p.includes('%') || p.includes('porcent')){
+          return `Las horas extras representan el ${pct(totalE,totalH)} del total (${totalE}h extras de ${totalH}h totales).`;
+        }
+        if(p.includes('mes') || p.includes('meses')){
+          const lineas = Object.entries(byMes).map(([m,v])=>`- ${m}: ${v.extra}h extras`).join('\n');
+          return `Horas extras por mes:\n${lineas}`;
+        }
+        return `En total tienes ${totalE}h extras de ${totalH}h totales (${pct(totalE,totalH)}). Las horas normales son ${totalN}h.`;
+      }
+
+      // ── Preguntas sobre mes específico ──
+      if(mesMencionado){
+        if(byMes[mesMencionado]){
+          const v=byMes[mesMencionado];
+          return `En ${mesMencionado} registraste ${v.total}h en total: ${v.normal}h normales y ${v.extra}h extras. Desglose: ${v.correctivo}h correctivo y ${v.preventivo}h preventivo.`;
+        }
+        return `No tengo datos registrados para ese mes.`;
+      }
+
+      // ── Preguntas sobre correctivo / preventivo ──
+      if(p.includes('correctivo')){
+        if(p.includes('mes') || p.includes('meses')){
+          const lineas=Object.entries(byMes).map(([m,v])=>`- ${m}: ${v.correctivo}h`).join('\n');
+          return `Horas de correctivo por mes:\n${lineas}`;
+        }
+        return `En total llevas ${totalCorr}h de mantenimiento correctivo (${pct(totalCorr,totalH)} del total).`;
+      }
+      if(p.includes('preventivo')){
+        if(p.includes('mes') || p.includes('meses')){
+          const lineas=Object.entries(byMes).map(([m,v])=>`- ${m}: ${v.preventivo}h`).join('\n');
+          return `Horas de preventivo por mes:\n${lineas}`;
+        }
+        return `En total llevas ${totalPrev}h de mantenimiento preventivo (${pct(totalPrev,totalH)} del total).`;
+      }
+
+      // ── Preguntas sobre mes más cargado ──
+      if((p.includes('mes') && (p.includes('cargado')||p.includes('mas horas')||p.includes('mayor')||p.includes('maximo')||p.includes('máximo')))){
+        const top=Object.entries(byMes).sort((a,b)=>b[1].total-a[1].total)[0];
+        return `El mes más cargado fue ${top[0]} con ${top[1].total}h en total (${top[1].normal}h normales y ${top[1].extra}h extras).`;
+      }
+
+      // ── Preguntas sobre trabajo específico o top trabajos ──
+      if(p.includes('trabajo') || p.includes('tarea') || p.includes('tipo')){
+        if(p.includes('mas') || p.includes('más') || p.includes('top') || p.includes('mayor')){
+          const top=Object.entries(byTrab).sort((a,b)=>b[1].total-a[1].total).slice(0,3);
+          return `Los trabajos con más horas son:\n1. ${top[0]?.[0]}: ${top[0]?.[1]?.total}h\n2. ${top[1]?.[0]}: ${top[1]?.[1]?.total}h\n3. ${top[2]?.[0]}: ${top[2]?.[1]?.total}h`;
+        }
+      }
+
+      // ── Preguntas sobre total general ──
+      if(p.includes('total') || p.includes('cuanto') || p.includes('cuánto') || p.includes('horas')){
+        return `En total llevas ${totalH}h registradas: ${totalN}h normales y ${totalE}h extras. Correctivo: ${totalCorr}h, Preventivo: ${totalPrev}h.`;
+      }
+
+      // ── Preguntas sobre edificio ──
+      if(p.includes('edificio') || p.includes('interface') || p.includes('ogilvy') || p.includes('wework')){
+        const lineas=Object.entries(byEdif).sort((a,b)=>b[1]-a[1]).map(([e,h])=>`- ${e}: ${r1(h)}h`).join('\n');
+        return `Horas por edificio:\n${lineas}`;
+      }
+
+      // ── No entendido ──
+      return `No entendí bien la pregunta. Puedes preguntarme cosas como:\n- ¿Cuántas horas extras tuve en marzo?\n- ¿Cuál fue el mes más cargado?\n- ¿Cuántas horas correctivas llevo?\n- ¿Qué trabajo genera más extras?`;
+    }
 
     window.preguntarSugerida=function(el){
       document.getElementById('aiInput').value=el.textContent;
       enviarPregunta();
     };
 
-    window.enviarPregunta=async function(){
+    window.enviarPregunta=function(){
       const input=document.getElementById('aiInput');
       const pregunta=input.value.trim();
       if(!pregunta) return;
       const msgs=document.getElementById('aiMessages');
-      const btn=document.getElementById('aiSend');
       msgs.innerHTML+=`<div class="ai-msg-user">${pregunta}</div>`;
-      input.value=''; btn.disabled=true;
-      const thinkId='think-'+Date.now();
-      msgs.innerHTML+=`<div class="ai-msg-bot thinking" id="${thinkId}">Analizando tus datos...</div>`;
-      msgs.scrollTop=msgs.scrollHeight;
-      aiHistory.push({role:'user',content:pregunta});
-      try{
-        const response=await fetch('https://api.anthropic.com/v1/messages',{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({
-            model:'claude-sonnet-4-20250514',
-            max_tokens:1000,
-            system:buildDataContext(),
-            messages:aiHistory
-          })
-        });
-        const data=await response.json();
-        const respuesta=data.content?.[0]?.text||'No pude procesar la respuesta.';
-        aiHistory.push({role:'assistant',content:respuesta});
-        document.getElementById(thinkId).className='ai-msg-bot';
-        document.getElementById(thinkId).textContent=respuesta;
-      }catch(err){
-        document.getElementById(thinkId).textContent='Error al conectar. Inténtalo de nuevo.';
-      }
-      btn.disabled=false;
-      msgs.scrollTop=msgs.scrollHeight;
+      input.value='';
+
+      setTimeout(()=>{
+        const respuesta=responderPregunta(pregunta);
+        msgs.innerHTML+=`<div class="ai-msg-bot">${respuesta.replace(/\n/g,'<br>')}</div>`;
+        msgs.scrollTop=msgs.scrollHeight;
+      }, 300);
     };
 
   }catch(err){
