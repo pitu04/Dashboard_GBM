@@ -94,6 +94,33 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 /* Footer */
 .footer{padding:14px 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-family:var(--mono);}
 
+/* Filter bar */
+.filter-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 40px;background:var(--bg2);border-bottom:1px solid var(--border);}
+.filter-label{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;margin-right:4px;}
+.filter-btn{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:12px;font-family:var(--mono);padding:5px 14px;cursor:pointer;transition:all .2s;}
+.filter-btn:hover{color:var(--text);border-color:var(--muted);}
+.filter-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.filter-sep{width:1px;height:20px;background:var(--border2);margin:0 4px;}
+
+/* AI Chat */
+.ai-wrap{background:var(--bg2);border:1px solid rgba(79,142,247,0.25);border-radius:12px;padding:20px 22px;}
+.ai-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.ai-title::before{content:'✦';font-size:10px;}
+.ai-messages{min-height:60px;max-height:260px;overflow-y:auto;margin-bottom:14px;display:flex;flex-direction:column;gap:10px;}
+.ai-msg-user{align-self:flex-end;background:var(--bg3);border:1px solid var(--border2);border-radius:10px 10px 2px 10px;padding:8px 14px;font-size:13px;color:var(--text);max-width:80%;}
+.ai-msg-bot{align-self:flex-start;background:rgba(79,142,247,0.08);border:1px solid rgba(79,142,247,0.15);border-radius:10px 10px 10px 2px;padding:8px 14px;font-size:13px;color:var(--text);max-width:85%;line-height:1.6;}
+.ai-msg-bot.thinking{color:var(--muted);font-style:italic;}
+.ai-input-row{display:flex;gap:8px;}
+.ai-input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;font-family:var(--font);padding:9px 14px;outline:none;transition:border-color .2s;}
+.ai-input:focus{border-color:var(--blue);}
+.ai-input::placeholder{color:var(--muted);}
+.ai-send{background:var(--blue);border:none;border-radius:8px;color:#fff;font-size:13px;font-family:var(--font);padding:9px 18px;cursor:pointer;transition:opacity .2s;white-space:nowrap;}
+.ai-send:hover{opacity:.85;}
+.ai-send:disabled{opacity:.4;cursor:default;}
+.ai-suggestions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.ai-sug{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;color:var(--muted);font-size:11px;padding:4px 12px;cursor:pointer;transition:all .2s;}
+.ai-sug:hover{color:var(--blue);border-color:var(--blue);}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 .fu{animation:fadeUp .4s ease both;}
 </style>
@@ -111,6 +138,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 </div>
 
 <div id="app">
+  <!-- Filter bar -->
+  <div class="filter-bar" id="filterBar" style="display:none">
+    <span class="filter-label">Mes</span>
+    <div id="filterMeses" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    <div class="filter-sep"></div>
+    <span class="filter-label">Tipo</span>
+    <button class="filter-btn active" data-tipo="todos" onclick="setFiltroTipo(this)">Todos</button>
+    <button class="filter-btn" data-tipo="Correctivo" onclick="setFiltroTipo(this)">Correctivo</button>
+    <button class="filter-btn" data-tipo="Preventivo" onclick="setFiltroTipo(this)">Preventivo</button>
+    <button class="filter-btn" data-tipo="Extra" onclick="setFiltroTipo(this)">Extra</button>
+    <div class="filter-sep"></div>
+    <button class="filter-btn" onclick="resetFiltros()" style="color:var(--muted)">✕ Reset</button>
+  </div>
+
   <header class="hdr">
     <div>
       <div class="eyebrow">GBM Facility Services</div>
@@ -228,6 +269,24 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
           <div class="leg-item"><div class="leg-dot" style="background:var(--grey)"></div>Otros</div>
           <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div>Acompaño.</div>
         </div>
+      </div>
+    </div>
+
+    <!-- BLOQUE IA: Pregunta libre -->
+    <div class="section-hdr" style="color:var(--blue);border-color:rgba(79,142,247,0.3)">Consulta inteligente · pregunta sobre tus datos</div>
+    <div class="ai-wrap fu">
+      <div class="ai-title">Asistente de datos</div>
+      <div class="ai-suggestions">
+        <span class="ai-sug" onclick="preguntarSugerida(this)">¿Cuántas horas extras tuve en marzo?</span>
+        <span class="ai-sug" onclick="preguntarSugerida(this)">¿Qué trabajo genera más horas extra?</span>
+        <span class="ai-sug" onclick="preguntarSugerida(this)">¿Cuál fue el mes más cargado?</span>
+        <span class="ai-sug" onclick="preguntarSugerida(this)">¿Cuántas horas correctivas llevo en total?</span>
+        <span class="ai-sug" onclick="preguntarSugerida(this)">¿Qué porcentaje son horas extras?</span>
+      </div>
+      <div class="ai-messages" id="aiMessages"></div>
+      <div class="ai-input-row">
+        <input class="ai-input" id="aiInput" type="text" placeholder="Escribe tu pregunta sobre las horas hombre..." onkeydown="if(event.key==='Enter') enviarPregunta()">
+        <button class="ai-send" id="aiSend" onclick="enviarPregunta()">Preguntar</button>
       </div>
     </div>
 
@@ -492,6 +551,149 @@ async function init(){
 
     document.getElementById('loader').style.display='none';
     document.getElementById('app').style.display='block';
+
+    // ── FILTROS ──
+    let allRows = rows;
+    let filtroMes = 'todos';
+    let filtroTipo = 'todos';
+
+    const filterMesesEl = document.getElementById('filterMeses');
+    filterMesesEl.innerHTML = '<button class="filter-btn active" data-mes="todos" onclick="setFiltroMes(this)">Todos</button>';
+    mk.forEach(m => {
+      filterMesesEl.innerHTML += `<button class="filter-btn" data-mes="${m}" onclick="setFiltroMes(this)">${MES[m]}</button>`;
+    });
+    document.getElementById('filterBar').style.display = 'flex';
+
+    function getFiltered() {
+      return allRows.filter(r => {
+        const mesOk = filtroMes==='todos' || (r.fecha && r.fecha.getMonth()+1===+filtroMes);
+        const tipoOk = filtroTipo==='todos' || (filtroTipo==='Extra' ? r.extra : r.tipo===filtroTipo);
+        return mesOk && tipoOk;
+      });
+    }
+
+    window.setFiltroMes = function(btn) {
+      filtroMes = btn.dataset.mes;
+      document.querySelectorAll('#filterMeses .filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderWithFilter();
+    };
+    window.setFiltroTipo = function(btn) {
+      filtroTipo = btn.dataset.tipo;
+      document.querySelectorAll('[data-tipo]').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderWithFilter();
+    };
+    window.resetFiltros = function() {
+      filtroMes='todos'; filtroTipo='todos';
+      document.querySelectorAll('.filter-btn').forEach(b=>{
+        b.classList.toggle('active', b.dataset.mes==='todos'||b.dataset.tipo==='todos');
+      });
+      renderWithFilter();
+    };
+
+    function renderWithFilter() {
+      const fr = getFiltered();
+      const fTotal = r1(fr.reduce((s,r)=>s+r.horas,0));
+      const fNorm  = r1(fr.filter(r=>!r.extra).reduce((s,r)=>s+r.horas,0));
+      const fExtra = r1(fr.filter(r=>r.extra).reduce((s,r)=>s+r.horas,0));
+      const fCorr  = r1(fr.filter(r=>r.tipo==='Correctivo').reduce((s,r)=>s+r.horas,0));
+      const fPrev  = r1(fr.filter(r=>r.tipo==='Preventivo').reduce((s,r)=>s+r.horas,0));
+      document.getElementById('v-total').textContent = fTotal;
+      document.getElementById('v-normal').innerHTML = fNorm+'<span class="m-unit">h</span>';
+      document.getElementById('s-normal').textContent = pct(fNorm,fTotal)+' del total';
+      document.getElementById('v-extra').innerHTML = fExtra+'<span class="m-unit" style="color:var(--muted)">h</span>';
+      document.getElementById('s-extra').textContent = pct(fExtra,fTotal)+' del total';
+      document.getElementById('v-corr').innerHTML = fCorr+'<span class="m-unit">h</span>';
+      document.getElementById('s-corr').textContent = pct(fCorr,fTotal)+' del total';
+      document.getElementById('v-prev').innerHTML = fPrev+'<span class="m-unit">h</span>';
+      document.getElementById('s-prev').textContent = pct(fPrev,fTotal)+' del total';
+    }
+
+    // ── IA ──
+    function buildDataContext() {
+      const byMes = {};
+      allRows.forEach(r => {
+        if(!r.fecha) return;
+        const m = MES[r.fecha.getMonth()+1];
+        if(!byMes[m]) byMes[m]={normal:0,extra:0,correctivo:0,preventivo:0};
+        if(r.extra) byMes[m].extra+=r.horas; else byMes[m].normal+=r.horas;
+        if(r.tipo==='Correctivo') byMes[m].correctivo+=r.horas;
+        if(r.tipo==='Preventivo') byMes[m].preventivo+=r.horas;
+      });
+      Object.keys(byMes).forEach(m=>{ Object.keys(byMes[m]).forEach(k=>{byMes[m][k]=r1(byMes[m][k]);}); });
+
+      const trabExtra2={};
+      allRows.filter(r=>r.extra).forEach(r=>{trabExtra2[r.trabajo]=(trabExtra2[r.trabajo]||0)+r.horas;});
+      const topExtras=Object.entries(trabExtra2).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([t,h])=>`${t}: ${r1(h)}h`);
+
+      const trabAll={};
+      allRows.forEach(r=>{trabAll[r.trabajo]=(trabAll[r.trabajo]||0)+r.horas;});
+      const topAll2=Object.entries(trabAll).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([t,h])=>`${t}: ${r1(h)}h`);
+
+      return `Eres un asistente que responde preguntas sobre los datos de horas hombre de mantenimiento del edificio Interface BCN de GBM Facility Services. Responde siempre en español, de forma concisa y directa. Aquí están los datos reales:
+
+TOTALES GENERALES:
+- Total horas: ${r1(allRows.reduce((s,r)=>s+r.horas,0))}h
+- Horas normales: ${r1(allRows.filter(r=>!r.extra).reduce((s,r)=>s+r.horas,0))}h
+- Horas extras: ${r1(allRows.filter(r=>r.extra).reduce((s,r)=>s+r.horas,0))}h
+- Correctivo: ${r1(allRows.filter(r=>r.tipo==='Correctivo').reduce((s,r)=>s+r.horas,0))}h
+- Preventivo: ${r1(allRows.filter(r=>r.tipo==='Preventivo').reduce((s,r)=>s+r.horas,0))}h
+- Total registros: ${allRows.length}
+
+HORAS POR MES:
+${Object.entries(byMes).map(([m,v])=>`- ${m}: ${r1(v.normal+v.extra)}h total (${v.normal}h normales, ${v.extra}h extras, ${v.correctivo}h correctivo, ${v.preventivo}h preventivo)`).join('\n')}
+
+TOP 5 TRABAJOS QUE GENERAN MÁS HORAS EXTRA:
+${topExtras.join(', ')}
+
+TOP 5 TRABAJOS POR HORAS TOTALES:
+${topAll2.join(', ')}
+
+Responde solo con los datos que tienes. Si preguntan algo que no está, dilo claramente.`;
+    }
+
+    const aiHistory=[];
+
+    window.preguntarSugerida=function(el){
+      document.getElementById('aiInput').value=el.textContent;
+      enviarPregunta();
+    };
+
+    window.enviarPregunta=async function(){
+      const input=document.getElementById('aiInput');
+      const pregunta=input.value.trim();
+      if(!pregunta) return;
+      const msgs=document.getElementById('aiMessages');
+      const btn=document.getElementById('aiSend');
+      msgs.innerHTML+=`<div class="ai-msg-user">${pregunta}</div>`;
+      input.value=''; btn.disabled=true;
+      const thinkId='think-'+Date.now();
+      msgs.innerHTML+=`<div class="ai-msg-bot thinking" id="${thinkId}">Analizando tus datos...</div>`;
+      msgs.scrollTop=msgs.scrollHeight;
+      aiHistory.push({role:'user',content:pregunta});
+      try{
+        const response=await fetch('https://api.anthropic.com/v1/messages',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            model:'claude-sonnet-4-20250514',
+            max_tokens:1000,
+            system:buildDataContext(),
+            messages:aiHistory
+          })
+        });
+        const data=await response.json();
+        const respuesta=data.content?.[0]?.text||'No pude procesar la respuesta.';
+        aiHistory.push({role:'assistant',content:respuesta});
+        document.getElementById(thinkId).className='ai-msg-bot';
+        document.getElementById(thinkId).textContent=respuesta;
+      }catch(err){
+        document.getElementById(thinkId).textContent='Error al conectar. Inténtalo de nuevo.';
+      }
+      btn.disabled=false;
+      msgs.scrollTop=msgs.scrollHeight;
+    };
 
   }catch(err){
     document.getElementById('loader').style.display='none';
